@@ -23,7 +23,8 @@
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                    <cylinder radius="${drive_wheel_radius}" length="${drive_wheel_width}"/>
+                    <!-- prevent wheel drift in simulation with a sphere -->
+                    <sphere radius="${drive_wheel_radius}"/> 
                 </geometry>
             </collision>
             <inertial>

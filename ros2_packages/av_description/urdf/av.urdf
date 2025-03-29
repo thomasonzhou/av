@@ -19,9 +19,10 @@
       <material name="grey"/>
     </visual>
     <collision>
-      <origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.055"/>
+        <!-- prevent wheel drift in simulation with a sphere -->
+        <sphere radius="0.055"/>
       </geometry>
     </collision>
     <inertial>
@@ -45,9 +46,10 @@
       <material name="grey"/>
     </visual>
     <collision>
-      <origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.055"/>
+        <!-- prevent wheel drift in simulation with a sphere -->
+        <sphere radius="0.055"/>
       </geometry>
     </collision>
     <inertial>
@@ -71,9 +73,10 @@
       <material name="grey"/>
     </visual>
     <collision>
-      <origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.055"/>
+        <!-- prevent wheel drift in simulation with a sphere -->
+        <sphere radius="0.055"/>
       </geometry>
     </collision>
     <inertial>
@@ -97,9 +100,10 @@
       <material name="grey"/>
     </visual>
     <collision>
-      <origin rpy="-1.5707963267948966 0 0" xyz="0 0 0"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <cylinder length="0.045" radius="0.055"/>
+        <!-- prevent wheel drift in simulation with a sphere -->
+        <sphere radius="0.055"/>
       </geometry>
     </collision>
     <inertial>
