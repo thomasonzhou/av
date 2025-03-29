@@ -25,7 +25,7 @@ def generate_launch_description():
             [
                 PathJoinSubstitution(
                     [
-                        FindPackageShare("openarm_description"),
+                        FindPackageShare("av_description"),
                         "launch",
                         "description.launch.py",
                     ]
@@ -72,22 +72,22 @@ def generate_launch_description():
 
     return launch.LaunchDescription(
         [
-            launch.actions.DeclareLaunchArgument(
+            DeclareLaunchArgument(
                 name="use_sim_time",
                 default_value="false",
                 description="Flag to enable usage of simulation time",
             ),
-            launch.actions.DeclareLaunchArgument(
+            DeclareLaunchArgument(
                 name="gui",
                 default_value="True",
                 description="Flag to enable joint_state_publisher_gui",
             ),
-            launch.actions.DeclareLaunchArgument(
+            DeclareLaunchArgument(
                 name="model",
                 default_value=str(xacro_path),
                 description="Absolute path to the robot URDF or xacro file"
             ),
-            launch.actions.DeclareLaunchArgument(
+            DeclareLaunchArgument(
                 name="rvizconfig",
                 default_value=str(default_rviz_config_path),
                 description="Absolute path to rviz config file",
