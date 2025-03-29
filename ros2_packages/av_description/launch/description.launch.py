@@ -23,7 +23,7 @@ def generate_launch_description():
         parameters=[
             {
                 "robot_description": ParameterValue(
-                    Command(["xacro ", LaunchConfiguration("model")], value_type=str)
+                    Command(["xacro ", LaunchConfiguration("model")])
                 ),
                 "use_sim_time": use_sim_time
             }
