@@ -35,7 +35,7 @@
     <origin rpy="-1.5707963267948966 0 0" xyz="0 0.145 0.055"/>
     <parent link="base_link"/>
     <child link="left_wheel_link"/>
-    <limit effort="1.0" velocity="10.0"/>
+    <limit effort="100.0" velocity="100.0"/>
   </joint>
   <link name="right_wheel_link">
     <visual>
@@ -62,7 +62,7 @@
     <origin rpy="-1.5707963267948966 0 0" xyz="0 -0.145 0.055"/>
     <parent link="base_link"/>
     <child link="right_wheel_link"/>
-    <limit effort="1.0" velocity="10.0"/>
+    <limit effort="100.0" velocity="100.0"/>
   </joint>
   <link name="left_caster_wheel_link">
     <visual>
@@ -80,7 +80,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.32"/>
+      <mass value="0.0"/>
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
@@ -89,7 +89,7 @@
     <origin rpy="-1.5707963267948966 0 0" xyz="0.45 0.145 0.05"/>
     <parent link="base_link"/>
     <child link="left_caster_wheel_link"/>
-    <limit effort="1.0" velocity="10.0"/>
+    <limit effort="100.0" velocity="100.0"/>
   </joint>
   <link name="right_caster_wheel_link">
     <visual>
@@ -107,7 +107,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.32"/>
+      <mass value="0.0"/>
       <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
     </inertial>
   </link>
@@ -116,7 +116,7 @@
     <origin rpy="-1.5707963267948966 0 0" xyz="0.45 -0.145 0.05"/>
     <parent link="base_link"/>
     <child link="right_caster_wheel_link"/>
-    <limit effort="1.0" velocity="10.0"/>
+    <limit effort="100.0" velocity="100.0"/>
   </joint>
   <link name="chassis">
     <visual>
@@ -143,4 +143,66 @@
     <child link="chassis"/>
   </joint>
   <link name="base_link"/>
+  <gazebo reference="left_wheel_link">
+    <material>Gazebo/Grey</material>
+    <surface>
+      <friction>
+        <ode>
+          <mu>0.005</mu>
+          <mu2>0.00005</mu2>
+        </ode>
+      </friction>
+    </surface>
+  </gazebo>
+  <gazebo reference="right_wheel_link">
+    <material>Gazebo/Grey</material>
+    <surface>
+      <friction>
+        <ode>
+          <mu>0.005</mu>
+          <mu2>0.00005</mu2>
+        </ode>
+      </friction>
+    </surface>
+  </gazebo>
+  <gazebo reference="left_caster_wheel_link">
+    <material>Gazebo/Grey</material>
+    <surface>
+      <friction>
+        <ode>
+          <mu>0.001</mu>
+          <mu2>0.001</mu2>
+        </ode>
+      </friction>
+    </surface>
+  </gazebo>
+  <gazebo reference="right_caster_wheel_link">
+    <material>Gazebo/Grey</material>
+    <surface>
+      <friction>
+        <ode>
+          <mu>0.001</mu>
+          <mu2>0.001</mu2>
+        </ode>
+      </friction>
+    </surface>
+  </gazebo>
+  <gazebo reference="chassis">
+    <material>Gazebo/DarkGrey</material>
+  </gazebo>
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="diff_drive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.29</wheel_separation>
+      <wheel_diameter>0.11</wheel_diameter>
+      <max_wheel_torque>100.0</max_wheel_torque>
+      <max_wheel_acceleration>100.0</max_wheel_acceleration>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+    </plugin>
+  </gazebo>
 </robot>
