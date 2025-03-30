@@ -34,11 +34,14 @@ def generate_launch_description():
     )
 
 
+    gazebo_params_path = pkg_share / 'config/gazebo_params.yaml'
+    
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             [
                 PathJoinSubstitution([
             FindPackageShare(package='gazebo_ros'), 'launch', 'gazebo.launch.py'])]),
+             launch_arguments={'extra_gazebo_args': '--ros-args --params-file ' + str(gazebo_params_path) }.items()
         )
 
     spawn_entity = Node(package='gazebo_ros', executable='spawn_entity.py',
