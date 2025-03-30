@@ -30,4 +30,3 @@ joint_broad:
       - right_caster_wheel_joint
     interfaces:
       - position
-    # publish_selected_only: true
