@@ -1,0 +1,7 @@
+<library path="av_hardware">
+    <class name="av_hardware/AVHardwareInterface"
+           type="av_hardware::AVHardwareInterface"
+           base_class_type="hardware_interface::ActuatorInterface">
+        <description>Hardware interface for CyberGear motors</description>
+    </class>
+</library>
