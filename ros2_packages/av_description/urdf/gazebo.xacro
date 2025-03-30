@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="av">
 
-    <xacro:macro name="wheel" params="prefix:='' caster:='false'">
+    <xacro:macro name="wheel" params="prefix:=''">
         <gazebo reference="${prefix}wheel_link">
             <material>Gazebo/Grey</material>
             <surface>
                 <friction>
                     <ode>
-                        <xacro:if value="${caster == True}">
-                            <mu>0.001</mu>
-                            <mu2>0.001</mu2>
-                        </xacro:if>
-                        <xacro:if value="${caster != True}">
-                            <mu>0.005</mu>
-                            <mu2>0.00005</mu2> 
-                        </xacro:if>
+                        <fdir>0 0 1</fdir>
+                        <mu>0.001</mu>
+                        <mu2>0.001</mu2>
                     </ode>
                 </friction>
             </surface>
@@ -24,8 +19,8 @@
     <!-- drive wheels -->
     <xacro:wheel prefix="left_"/>
     <xacro:wheel prefix="right_"/>
-    <xacro:wheel prefix="left_caster_" caster="true"/>
-    <xacro:wheel prefix="right_caster_" caster="true"/>
+    <xacro:wheel prefix="left_caster_"/>
+    <xacro:wheel prefix="right_caster_"/>
 
     <gazebo reference="chassis">
         <material>Gazebo/DarkGrey</material>

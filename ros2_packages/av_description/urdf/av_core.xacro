@@ -54,12 +54,12 @@
     <xacro:wheel prefix="right_" reflect="-1.0" type="continuous" radius="${drive_wheel_radius}" width="${drive_wheel_width}" mass="${motor_mass}"/>
 
     <!-- caster wheels -->
-    <xacro:property name="caster_mass" value="0.0"/>
+    <xacro:property name="caster_mass" value="0.100"/>
     <xacro:property name="caster_wheel_radius" value="${0.10 / 2.0}"/>
     <xacro:property name="caster_wheel_width" value="0.040"/>
     <xacro:property name="caster_x_offset" value="0.45"/>
-    <xacro:wheel prefix="left_caster_" reflect="1.0" type="fixed" radius="${caster_wheel_radius}" width="${caster_wheel_width}" mass="${caster_mass}" x_offset="${caster_x_offset}"/>
-    <xacro:wheel prefix="right_caster_" reflect="-1.0" type="fixed" radius="${caster_wheel_radius}" width="${caster_wheel_width}" mass="${caster_mass}" x_offset="${caster_x_offset}"/>
+    <xacro:wheel prefix="left_caster_" reflect="1.0" type="continuous" radius="${caster_wheel_radius}" width="${caster_wheel_width}" mass="${caster_mass}" x_offset="${caster_x_offset}"/>
+    <xacro:wheel prefix="right_caster_" reflect="-1.0" type="continuous" radius="${caster_wheel_radius}" width="${caster_wheel_width}" mass="${caster_mass}" x_offset="${caster_x_offset}"/>
 
 
     <link name="chassis">

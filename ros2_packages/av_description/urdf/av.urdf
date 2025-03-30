@@ -80,11 +80,11 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="7.583333333333335e-05" ixy="0.0" ixz="0.0" iyy="7.583333333333335e-05" iyz="0.0" izz="0.00012500000000000003"/>
     </inertial>
   </link>
-  <joint name="left_caster_wheel_joint" type="fixed">
+  <joint name="left_caster_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
     <origin rpy="-1.5707963267948966 0 0" xyz="0.45 0.145 0.05"/>
     <parent link="base_link"/>
@@ -107,11 +107,11 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.0"/>
-      <inertia ixx="0.0" ixy="0.0" ixz="0.0" iyy="0.0" iyz="0.0" izz="0.0"/>
+      <mass value="0.1"/>
+      <inertia ixx="7.583333333333335e-05" ixy="0.0" ixz="0.0" iyy="7.583333333333335e-05" iyz="0.0" izz="0.00012500000000000003"/>
     </inertial>
   </link>
-  <joint name="right_caster_wheel_joint" type="fixed">
+  <joint name="right_caster_wheel_joint" type="continuous">
     <axis xyz="0 0 1"/>
     <origin rpy="-1.5707963267948966 0 0" xyz="0.45 -0.145 0.05"/>
     <parent link="base_link"/>
@@ -148,8 +148,9 @@
     <surface>
       <friction>
         <ode>
-          <mu>0.005</mu>
-          <mu2>0.00005</mu2>
+          <fdir>0 0 1</fdir>
+          <mu>0.001</mu>
+          <mu2>0.001</mu2>
         </ode>
       </friction>
     </surface>
@@ -159,8 +160,9 @@
     <surface>
       <friction>
         <ode>
-          <mu>0.005</mu>
-          <mu2>0.00005</mu2>
+          <fdir>0 0 1</fdir>
+          <mu>0.001</mu>
+          <mu2>0.001</mu2>
         </ode>
       </friction>
     </surface>
@@ -170,6 +172,7 @@
     <surface>
       <friction>
         <ode>
+          <fdir>0 0 1</fdir>
           <mu>0.001</mu>
           <mu2>0.001</mu2>
         </ode>
@@ -181,6 +184,7 @@
     <surface>
       <friction>
         <ode>
+          <fdir>0 0 1</fdir>
           <mu>0.001</mu>
           <mu2>0.001</mu2>
         </ode>
