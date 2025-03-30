@@ -194,6 +194,23 @@
   <gazebo reference="chassis">
     <material>Gazebo/DarkGrey</material>
   </gazebo>
+  <!-- controls -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_diff_drive.so" name="diff_drive">
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+      <wheel_separation>0.29</wheel_separation>
+      <wheel_diameter>0.11</wheel_diameter>
+      <max_wheel_torque>100.0</max_wheel_torque>
+      <max_wheel_acceleration>100.0</max_wheel_acceleration>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+    </plugin>
+  </gazebo>
+  <!-- sensors -->
   <gazebo reference="laser_frame">
     <material>Gazebo/Black</material>
     <sensor name="laser" type="ray">
@@ -224,20 +241,30 @@
       </plugin>
     </sensor>
   </gazebo>
-  <gazebo>
-    <plugin filename="libgazebo_ros_diff_drive.so" name="diff_drive">
-      <left_joint>left_wheel_joint</left_joint>
-      <right_joint>right_wheel_joint</right_joint>
-      <wheel_separation>0.29</wheel_separation>
-      <wheel_diameter>0.11</wheel_diameter>
-      <max_wheel_torque>100.0</max_wheel_torque>
-      <max_wheel_acceleration>100.0</max_wheel_acceleration>
-      <odometry_frame>odom</odometry_frame>
-      <robot_base_frame>base_link</robot_base_frame>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
-      <publish_wheel_tf>true</publish_wheel_tf>
-    </plugin>
+  <gazebo reference="camera_link">
+    <material>Gazebo/Black</material>
+    <sensor name="camera" type="camera">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10.0</update_rate>
+      <!-- RealSense D435i-->
+      <camera>
+        <!-- RGB camera 69 degrees -->
+        <horizontal_fov>1.204</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>100.0</far>
+        </clip>
+      </camera>
+      <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+        <frame_name>camera_link_optical</frame_name>
+      </plugin>
+    </sensor>
   </gazebo>
   <material name="black">
     <color rgba="0.0 0.0 0.0 1.0"/>
@@ -279,5 +306,11 @@
     <origin rpy="0 0 0" xyz="-0.05 0 0.15"/>
     <parent link="chassis"/>
     <child link="camera_link"/>
+  </joint>
+  <link name="camera_link_optical"/>
+  <joint name="camera_joint_optical" type="fixed">
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+    <parent link="camera_link"/>
+    <child link="camera_link_optical"/>
   </joint>
 </robot>
