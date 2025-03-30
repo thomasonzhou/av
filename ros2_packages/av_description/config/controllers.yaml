@@ -12,7 +12,7 @@ controller_manager:
 diff_cont:
   ros__parameters:
 
-    publish_rate: 30
+    publish_rate: 30.0
     base_frame_id: base_link
 
     left_wheel_names: ['left_wheel_joint']
@@ -24,8 +24,10 @@ diff_cont:
 
 joint_broad:
   ros__parameters:
-    publish_rate: 30
-    joint_names:
+    publish_rate: 30.0
+    joints:
       - left_caster_wheel_joint
       - right_caster_wheel_joint
-    publish_selected_only: true
+    interfaces:
+      - position
+    # publish_selected_only: true
