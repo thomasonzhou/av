@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="av">
+
+    <xacro:include filename="macros.xacro"/>
+
+
+    <material name="black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+    </material>
+
+    <xacro:property name="lidar_height" value="0.05"/>
+    <xacro:property name="lidar_radius" value="${0.07 / 2.0}"/>
+    <xacro:property name="lidar_mass" value="0.2"/>
+
+    <link name="laser_frame">
+        <visual>
+            <geometry>
+                <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${lidar_radius}" length="${lidar_height}"/>
+            </geometry>
+        </collision>
+        <inertia>
+            <xacro:cylinder_inertia mass="${lidar_mass}" radius="${lidar_radius}" width="${lidar_height}"/>
+        </inertia>
+    </link>
+
+    <joint name="laser_joint" type="fixed">
+        <origin xyz="0.25 0 ${lidar_height}" rpy="0 0 0"/>
+        <parent link="chassis"/>
+        <child link="laser_frame"/>
+    </joint>
+
+</robot>

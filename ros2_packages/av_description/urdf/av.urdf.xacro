@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="av">
-    <xacro:include filename="av_core.xacro"/>
+    <xacro:include filename="core.xacro"/>
     <xacro:include filename="gazebo.xacro"/>
-    <xacro:include filename="gazebo_control.xacro"/>
-    
+    <xacro:include filename="sensors.xacro"/>
 </robot>

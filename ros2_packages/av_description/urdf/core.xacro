@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="av">
 
+    <xacro:include filename="macros.xacro"/>
+
     <material name="dark_grey">
         <color rgba="0.2 0.2 0.2 1.0"/>
     </material>
@@ -9,7 +11,6 @@
     </material>
 
     <xacro:property name="y_wheel_offset" value="${0.29 / 2.0}"/>
-    
     
     <xacro:macro name="wheel" params="prefix:='' reflect:=1.0 type radius width mass x_offset:='0'">
         <link name="${prefix}wheel_link">
@@ -27,15 +28,7 @@
                     <sphere radius="${drive_wheel_radius}"/> 
                 </geometry>
             </collision>
-            <inertial>
-                <mass value="${mass}"/> 
-                <inertia 
-                    ixx="${(mass * ((3 * radius ** 2) + width ** 2)) / 12.0}"
-                    iyy="${(mass * ((3 * radius ** 2) + width ** 2)) / 12.0}"
-                    izz="${(mass * radius ** 2) / 2.0}"
-                    ixy="0.0" ixz ="0.0" iyz="0.0"
-                />
-            </inertial>
+            <xacro:cylinder_inertia mass="${mass}" radius="${radius}" width="${width}"/>
         </link>
         <joint name="${prefix}wheel_joint" type="${type}">
             <axis xyz="0 0 1"/>

@@ -194,6 +194,9 @@
   <gazebo reference="chassis">
     <material>Gazebo/DarkGrey</material>
   </gazebo>
+  <gazebo reference="laser_frame">
+    <material>Gazebo/Black</material>
+  </gazebo>
   <gazebo>
     <plugin filename="libgazebo_ros_diff_drive.so" name="diff_drive">
       <left_joint>left_wheel_joint</left_joint>
@@ -209,4 +212,31 @@
       <publish_wheel_tf>true</publish_wheel_tf>
     </plugin>
   </gazebo>
+  <material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <link name="laser_frame">
+    <visual>
+      <geometry>
+        <cylinder length="0.05" radius="0.035"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.05" radius="0.035"/>
+      </geometry>
+    </collision>
+    <inertia>
+      <inertial>
+        <mass value="0.2"/>
+        <inertia ixx="0.00010291666666666668" ixy="0.0" ixz="0.0" iyy="0.00010291666666666668" iyz="0.0" izz="0.00012250000000000002"/>
+      </inertial>
+    </inertia>
+  </link>
+  <joint name="laser_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.25 0 0.05"/>
+    <parent link="chassis"/>
+    <child link="laser_frame"/>
+  </joint>
 </robot>
