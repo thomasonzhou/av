@@ -48,6 +48,18 @@ def generate_launch_description():
                         arguments=['-topic', 'robot_description',
                                    '-entity', 'av'],
                         output='screen')
+    
+    diff_drive_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['diff_cont']
+    )
+
+    joint_broadcaster_spawner = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=['joint_broad']
+    )
 
     return launch.LaunchDescription(
         [
@@ -59,6 +71,8 @@ def generate_launch_description():
             use_sim_time_launch_arg,
             robot_state_publisher_node,
             gazebo,
-            spawn_entity
+            spawn_entity,
+            diff_drive_spawner,
+            joint_broadcaster_spawner
         ]
     )
