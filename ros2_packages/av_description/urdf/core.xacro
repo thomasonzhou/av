@@ -40,14 +40,14 @@
     </xacro:macro>
 
     <!-- drive wheels -->
-    <xacro:property name="motor_mass" value="0.320"/>
+    <xacro:property name="drive_wheel_mass" value="0.322"/>
     <xacro:property name="drive_wheel_radius" value="${0.11 / 2.0}"/>
     <xacro:property name="drive_wheel_width" value="0.045"/>
-    <xacro:wheel prefix="left_" reflect="1.0" radius="${drive_wheel_radius}" width="${drive_wheel_width}" mass="${motor_mass}"/>
-    <xacro:wheel prefix="right_" reflect="-1.0" radius="${drive_wheel_radius}" width="${drive_wheel_width}" mass="${motor_mass}"/>
+    <xacro:wheel prefix="left_" reflect="1.0" radius="${drive_wheel_radius}" width="${drive_wheel_width}" mass="${drive_wheel_mass}"/>
+    <xacro:wheel prefix="right_" reflect="-1.0" radius="${drive_wheel_radius}" width="${drive_wheel_width}" mass="${drive_wheel_mass}"/>
 
     <!-- caster wheels -->
-    <xacro:property name="caster_mass" value="0.100"/>
+    <xacro:property name="caster_mass" value="0.260"/>
     <xacro:property name="caster_wheel_radius" value="${0.10 / 2.0}"/>
     <xacro:property name="caster_wheel_width" value="0.040"/>
     <xacro:property name="caster_x_offset" value="0.45"/>
