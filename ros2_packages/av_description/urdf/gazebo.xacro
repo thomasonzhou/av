@@ -1,59 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="av">
 
-    <xacro:macro name="wheel" params="prefix:=''">
+    <xacro:macro name="wheel" params="prefix:='' caster:='false'">
         <gazebo reference="${prefix}wheel_link">
             <material>Gazebo/Grey</material>
-            <surface>
+            <!-- <surface>
                 <friction>
-                    <ode>
-                        <fdir>0 0 1</fdir>
-                        <mu>0.001</mu>
-                        <mu2>0.001</mu2>
-                    </ode>
-                </friction>
-            </surface>
+                    <ode> -->
+                        <!-- <fdir>0 0 1</fdir> -->
+        <xacro:if value="${caster}">
+            <mu1 value="0.000001"/>
+            <mu2 value="0.000000001"/>
+        </xacro:if>
+        <xacro:if value="${caster != 'true'}">
+            <mu1 value="1.5"/>
+            <mu2 value="0.1"/>
+        </xacro:if>
+                    <!-- </ode> -->
+                <!-- </friction>
+            </surface> -->
         </gazebo>
     </xacro:macro>
 
     <!-- drive wheels -->
     <xacro:wheel prefix="left_"/>
     <xacro:wheel prefix="right_"/>
-    <xacro:wheel prefix="left_caster_"/>
-    <xacro:wheel prefix="right_caster_"/>
+    <xacro:wheel prefix="left_caster_" caster="true"/>
+    <xacro:wheel prefix="right_caster_" caster="true"/>
 
     <gazebo reference="chassis">
         <material>Gazebo/DarkGrey</material>
     </gazebo>
-
-    <!-- controls -->
-
-    <!-- <gazebo>
-        <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
-    
-            <left_joint>left_wheel_joint</left_joint>
-            <right_joint>right_wheel_joint</right_joint>
-            <wheel_separation>0.29</wheel_separation>
-            <wheel_diameter>0.11</wheel_diameter>
-    
-            <max_wheel_torque>100.0</max_wheel_torque>
-            <max_wheel_acceleration>100.0</max_wheel_acceleration>
-
-            <odometry_frame>odom</odometry_frame>
-            <robot_base_frame>base_link</robot_base_frame>
-
-            <publish_odom>true</publish_odom>
-            <publish_odom_tf>true</publish_odom_tf>
-            <publish_wheel_tf>true</publish_wheel_tf>
-    
-        </plugin>
-        <plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
-            <publish_selected_only>true</publish_selected_only>
-            <joint_name>left_caster_wheel_joint</joint_name>
-            <joint_name>right_caster_wheel_joint</joint_name>
-            <update_rate>100.0</update_rate>
-        </plugin>
-    </gazebo> -->
 
     <!-- sensors -->
 
