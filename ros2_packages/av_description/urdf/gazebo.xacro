@@ -99,7 +99,7 @@
                 <!-- RGB camera 69 degrees -->
                 <horizontal_fov>1.204</horizontal_fov>
                 <image>
-                    <width>640</width>
+                    <width>848</width>
                     <height>480</height>
                     <format>B8G8R8</format>
                 </image>
