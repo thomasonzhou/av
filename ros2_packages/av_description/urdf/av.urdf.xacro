@@ -3,4 +3,5 @@
     <xacro:include filename="core.xacro"/>
     <xacro:include filename="gazebo.xacro"/>
     <xacro:include filename="sensors.xacro"/>
+    <xacro:include filename="ros2_control.xacro"/>
 </robot>
