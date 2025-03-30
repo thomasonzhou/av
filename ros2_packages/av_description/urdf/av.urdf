@@ -266,4 +266,18 @@
     <parent link="chassis"/>
     <child link="laser_frame"/>
   </joint>
+  <!-- camera -->
+  <link name="camera_link" type="fixed">
+    <visual>
+      <geometry>
+        <box size="0.025 0.09 0.025"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+  <joint name="camera_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="-0.05 0 0.15"/>
+    <parent link="chassis"/>
+    <child link="camera_link"/>
+  </joint>
 </robot>
