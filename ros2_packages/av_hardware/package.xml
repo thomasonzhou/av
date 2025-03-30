@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>av_description</name>
+  <name>av_hardware</name>
   <version>0.0.0</version>
-  <description>URDF for a mobile robot equipped with LiDAR and a depth camera</description>
+  <description>ros2_control hardware interface for CyberGear motors</description>
   <maintainer email="t95zhou@uwaterloo.ca">Thomason Zhou</maintainer>
   <license>BSD-3-Clause</license>
 
