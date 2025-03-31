@@ -13,6 +13,7 @@ find_package(hardware_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(std_srvs REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED
   src/av_hardware_interface.cpp
@@ -27,6 +28,7 @@ ament_target_dependencies(${PROJECT_NAME}
   pluginlib
   rclcpp
   rclcpp_lifecycle
+  std_srvs
 )
 ament_export_libraries(${PROJECT_NAME})
 pluginlib_export_plugin_description_file(hardware_interface av_hardware.xml)

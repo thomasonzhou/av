@@ -3,46 +3,196 @@
 
 namespace av_hardware
 {
-AvHardwareInterface::AvHardwareInterface(){
-   
+AvHardwareInterface::AvHardwareInterface():
+    ActuatorInterface(), 
+    motor_ids_{left_motor_id_, right_motor_id_},
+    joint_names_{"left_wheel_joint", "right_wheel_joint"},
+    node_names_{"cybergear_left", "cybergear_right"}{
+    
+    node_ = rclcpp::Node::make_shared("service_client");
+    left_torque_client_ = node_->create_client<std_srvs::srv::SetBool>("/"+ node_names_.at(0)+"/enable_torque");
+    right_torque_client_ = node_->create_client<std_srvs::srv::SetBool>("/"+ node_names_.at(1)+"/enable_torque");
+    
+    left_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(0)+"/zero_position");
+    right_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(1)+"/zero_position");
+
+    left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
+        "/"+ node_names_.at(0)+"/joint_states", 10,
+        [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
+            position_[0] = msg->position[0];
+            velocity_[0] = msg->velocity[0];
+        });
+    right_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
+        "/"+ node_names_.at(1)+"/joint_states", 10,
+        [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
+            position_[1] = msg->position[0];
+            velocity_[1] = msg->velocity[0];
+        });
+    joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
+        "/joint_trajectory", 10);
+    RCLCPP_INFO(get_logger(), "Initialized motors with IDs: %d, %d", motor_ids_.at(0), motor_ids_.at(1));
     
 }
-hardware_interface::CallbackReturn AvHardwareInterface::on_init(const hardware_interface::HardwareInfo & /*info*/)
+
+rclcpp::Logger AvHardwareInterface::get_logger() const {
+    return rclcpp::get_logger("AvHardwareInterface");
+}
+
+
+hardware_interface::CallbackReturn AvHardwareInterface::on_init(const hardware_interface::HardwareInfo & info)
 {
-    
+    if (hardware_interface::ActuatorInterface::on_init(info) != CallbackReturn::SUCCESS) {
+        return CallbackReturn::ERROR;
+      }
+    if (joint_names_.size() != NUM_JOINTS) {
+    RCLCPP_FATAL(get_logger(), "Got %ld joints. Expected %ld.", info_.joints.size(),
+                    NUM_JOINTS);
+    return CallbackReturn::ERROR;
+    }
+    // TODO: add executor to run CyberGear nodes directly
+
+    RCLCPP_INFO(get_logger(), "Successfully connected to robot");
+    return CallbackReturn::SUCCESS;
 };
 
 hardware_interface::CallbackReturn AvHardwareInterface::on_configure(const rclcpp_lifecycle::State & /*previous_state*/)
 {
+    // Wait for the service to be available
+    while(!left_zero_client_->wait_for_service(std::chrono::seconds(1)))
+    {
+        RCLCPP_WARN(get_logger(), "Waiting for left zero service to be available...");
+    }
+    while(!right_zero_client_->wait_for_service(std::chrono::seconds(1)))
+    {
+        RCLCPP_WARN(get_logger(), "Waiting for right zero service to be available...");
+    }
+    auto left_zero_future = left_zero_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    auto right_zero_future = right_zero_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    if (rclcpp::spin_until_future_complete(node_, left_zero_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service zero_position for left motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service zero_position for left motor");
+    }
+    if (rclcpp::spin_until_future_complete(node_, right_zero_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service zero_position for right motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service zero_position for right motor");
+    }
+    return hardware_interface::CallbackReturn::SUCCESS;
 };
 
 hardware_interface::CallbackReturn AvHardwareInterface::on_activate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
+
+    while(!left_torque_client_->wait_for_service(std::chrono::seconds(1)))
+    {
+        RCLCPP_WARN(get_logger(), "Waiting for left torque service to be available...");
+    }
+    while(!right_torque_client_->wait_for_service(std::chrono::seconds(1)))
+    {
+        RCLCPP_WARN(get_logger(), "Waiting for right torque service to be available...");
+    }
+
+    auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
+    request->data = true;
+    auto left_future = left_torque_client_->async_send_request(request);
+    auto right_future = right_torque_client_->async_send_request(request);
+
+    if (rclcpp::spin_until_future_complete(node_, left_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service enable_torque for left motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service enable_torque for left motor");
+    }
+    if (rclcpp::spin_until_future_complete(node_, right_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service enable_torque for right motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service enable_torque for right motor");
+    }
+
+   return hardware_interface::CallbackReturn::SUCCESS;
+
 };
 
 hardware_interface::CallbackReturn AvHardwareInterface::on_deactivate(const rclcpp_lifecycle::State & /*previous_state*/)
 {
+    auto request = std::make_shared<std_srvs::srv::SetBool::Request>();
+    request->data = false;
+    auto left_future = left_torque_client_->async_send_request(request);
+    auto right_future = right_torque_client_->async_send_request(request);
+    if (rclcpp::spin_until_future_complete(node_, left_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service disable_torque for left motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service disable_torque for left motor");
+    }
+    if (rclcpp::spin_until_future_complete(node_, right_future) != rclcpp::FutureReturnCode::SUCCESS)
+    {
+        RCLCPP_ERROR(get_logger(), "Failed to call service disable_torque for right motor");
+        return hardware_interface::CallbackReturn::ERROR;
+    }
+    else{
+        RCLCPP_INFO(get_logger(), "Successfully called service disable_torque for right motor");
+    }
+
+    return hardware_interface::CallbackReturn::SUCCESS;
 };
 
 std::vector<hardware_interface::StateInterface> AvHardwareInterface::export_state_interfaces()
 {
+
     std::vector<hardware_interface::StateInterface> state_interfaces;
-    // state_interfaces.emplace_back("joint1", "position", &joint1_position_);
+    for (std::size_t i = 0; i < position_.size(); ++i)
+    {
+        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &position_.at(i)));
+        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &velocity_.at(i)));
+    }
     return state_interfaces;
 }
 std::vector<hardware_interface::CommandInterface> AvHardwareInterface::export_command_interfaces()
 {
     std::vector<hardware_interface::CommandInterface> command_interfaces;
-    // command_interfaces.emplace_back("joint1", "position", &joint1_command_);
+    for (std::size_t i = 0; i < command_position_.size(); ++i)
+    {
+        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &command_position_.at(i)));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &command_velocity_.at(i)));
+    }
     return command_interfaces;
 }
 
 hardware_interface::return_type AvHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
+
+    rclcpp::spin_some(node_);
     return hardware_interface::return_type::OK;
 }
 hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
+
+    trajectory_msgs::msg::JointTrajectory msg;
+    msg.joint_names = joint_names_;
+    msg.points.resize(1);
+    msg.points[0].positions.resize(NUM_JOINTS);
+    msg.points[0].velocities.resize(NUM_JOINTS);
+    msg.points[0].positions = command_position_;
+    msg.points[0].velocities = command_velocity_;
+    msg.points[0].effort.resize(NUM_JOINTS);
+    msg.header.stamp = node_->now();
+
+    joint_trajectory_pub_->publish(msg);
     return hardware_interface::return_type::OK;
 }
 
