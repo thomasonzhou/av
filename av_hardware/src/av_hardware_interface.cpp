@@ -4,9 +4,10 @@
 namespace av_hardware
 {
 AvHardwareInterface::AvHardwareInterface(){
-
+   
+    
 }
-hardware_interface::CallbackReturn AvHardwareInterface::on_init(const hardware_interface::HardwareInfo & info)
+hardware_interface::CallbackReturn AvHardwareInterface::on_init(const hardware_interface::HardwareInfo & /*info*/)
 {
     
 };
@@ -36,11 +37,11 @@ std::vector<hardware_interface::CommandInterface> AvHardwareInterface::export_co
     return command_interfaces;
 }
 
-hardware_interface::return_type AvHardwareInterface::read(const rclcpp::Time & time, const rclcpp::Duration & period)
+hardware_interface::return_type AvHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
     return hardware_interface::return_type::OK;
 }
-hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & time, const rclcpp::Duration & period)
+hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
     return hardware_interface::return_type::OK;
 }
