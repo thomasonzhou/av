@@ -182,16 +182,20 @@ hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & 
 {
 
     trajectory_msgs::msg::JointTrajectory msg;
-    msg.joint_names = joint_names_;
-    msg.points.resize(1);
-    msg.points[0].positions.resize(NUM_JOINTS);
-    msg.points[0].velocities.resize(NUM_JOINTS);
-    msg.points[0].positions = command_position_;
-    msg.points[0].velocities = command_velocity_;
-    msg.points[0].effort.resize(NUM_JOINTS);
-    msg.header.stamp = node_->now();
 
-    joint_trajectory_pub_->publish(msg);
+    auto send_message = [this](const int i) {
+        trajectory_msgs::msg::JointTrajectory msg;
+        msg.joint_names = {joint_names_.at(i)};
+        msg.points.resize(1);
+        msg.points[0].positions[0] = position_.at(i);
+        msg.points[0].velocities[0] = velocity_.at(i);
+        msg.header.stamp = node_->now();
+        joint_trajectory_pub_->publish(msg);
+    };
+
+    send_message(0); // left motor
+    send_message(1); // right motor
+
     return hardware_interface::return_type::OK;
 }
 
