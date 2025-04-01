@@ -18,27 +18,29 @@ find_package(std_srvs REQUIRED)
 add_library(${PROJECT_NAME} SHARED
   src/av_hardware_interface.cpp
 )
-target_include_directories(${PROJECT_NAME}
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+target_include_directories(
+  ${PROJECT_NAME}
+  PRIVATE
+  include
 )
-ament_target_dependencies(${PROJECT_NAME}
+ament_target_dependencies(
+  ${PROJECT_NAME}
   hardware_interface
   pluginlib
   rclcpp
   rclcpp_lifecycle
   std_srvs
 )
-ament_export_libraries(${PROJECT_NAME})
 pluginlib_export_plugin_description_file(hardware_interface av_hardware.xml)
+
+install(
+  TARGETS ${PROJECT_NAME}
+  DESTINATION lib
+)
 
 install(DIRECTORY include/
   DESTINATION include
 )
-install(FILES
-  av_hardware.xml
-  DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -61,5 +63,19 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+ament_export_include_directories(
+  include
+)
+
+ament_export_libraries(
+  ${PROJECT_NAME}
+)
+ament_export_dependencies(
+  hardware_interface
+  pluginlib
+  rclcpp
+)
+
 
 ament_package()

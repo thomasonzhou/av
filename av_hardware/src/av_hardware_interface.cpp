@@ -17,13 +17,13 @@ AvHardwareInterface::AvHardwareInterface():
     right_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(1)+"/zero_position");
 
     left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-        "/"+ node_names_.at(0)+"/joint_states", 10,
+        "/"+ node_names_.at(0)+"/joint_state", 10,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             position_[0] = msg->position[0];
             velocity_[0] = msg->velocity[0];
         });
     right_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-        "/"+ node_names_.at(1)+"/joint_states", 10,
+        "/"+ node_names_.at(1)+"/joint_state", 10,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             position_[1] = msg->position[0];
             velocity_[1] = msg->velocity[0];
@@ -31,7 +31,6 @@ AvHardwareInterface::AvHardwareInterface():
     joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
         "/joint_trajectory", 10);
     RCLCPP_INFO(get_logger(), "Initialized motors with IDs: %d, %d", motor_ids_.at(0), motor_ids_.at(1));
-    
 }
 
 rclcpp::Logger AvHardwareInterface::get_logger() const {
@@ -157,8 +156,8 @@ std::vector<hardware_interface::StateInterface> AvHardwareInterface::export_stat
     std::vector<hardware_interface::StateInterface> state_interfaces;
     for (std::size_t i = 0; i < position_.size(); ++i)
     {
-        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &position_.at(i)));
-        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &velocity_.at(i)));
+        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &position_[i]));
+        state_interfaces.emplace_back(hardware_interface::StateInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &velocity_[i]));
     }
     return state_interfaces;
 }
@@ -167,8 +166,8 @@ std::vector<hardware_interface::CommandInterface> AvHardwareInterface::export_co
     std::vector<hardware_interface::CommandInterface> command_interfaces;
     for (std::size_t i = 0; i < command_position_.size(); ++i)
     {
-        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &command_position_.at(i)));
-        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &command_velocity_.at(i)));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_POSITION, &command_position_[i]));
+        command_interfaces.emplace_back(hardware_interface::CommandInterface(joint_names_[i], hardware_interface::HW_IF_VELOCITY, &command_velocity_[i]));
     }
     return command_interfaces;
 }
