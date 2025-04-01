@@ -76,7 +76,6 @@ def generate_launch_description():
         package='controller_manager',
         executable='spawner',
         arguments=['joint_broad'],
-        prefix=['xterm -e gdb -ex run --args']
     )
 
     delayed_joint_broadcaster_spawner = RegisterEventHandler(
