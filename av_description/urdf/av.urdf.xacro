@@ -5,12 +5,12 @@
     <xacro:arg name="sim_mode" default="false"/>
 
     <xacro:include filename="core.xacro"/>
-    <xacro:include filename="gazebo.xacro"/>
     <xacro:include filename="sensors.xacro"/>
     <xacro:if value="$(arg use_ros2_control)">
         <xacro:include filename="ros2_control.xacro"/>
     </xacro:if>
     <xacro:if value="$(arg sim_mode)">
+        <xacro:include filename="gazebo.xacro"/>
         <xacro:include filename="gazebo_control.xacro"/>
     </xacro:if>
 </robot>

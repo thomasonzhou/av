@@ -5,12 +5,12 @@
         <gazebo reference="${prefix}wheel_link">
             <material>Gazebo/Grey</material>
         <xacro:if value="${caster}">
-            <mu1 value="0.000001"/>
-            <mu2 value="0.000000001"/>
+            <mu1 value="0.0001"/>
+            <mu2 value="0.0001"/>
         </xacro:if>
         <xacro:if value="${caster != 'true'}">
-            <mu1 value="1.5"/>
-            <mu2 value="0.1"/>
+            <mu1 value="0.7"/>
+            <mu2 value="1.0"/>
         </xacro:if>
         </gazebo>
     </xacro:macro>
