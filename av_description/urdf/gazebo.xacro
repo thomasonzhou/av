@@ -5,8 +5,8 @@
         <gazebo reference="${prefix}wheel_link">
             <material>Gazebo/Grey</material>
         <xacro:if value="${caster == 'true'}">
-            <mu1 value="0.001"/>
-            <mu2 value="0.001"/>
+            <mu1 value="0.01"/>
+            <mu2 value="0.02"/>
         </xacro:if>
         <xacro:if value="${caster != 'true'}">
             <fdir>0 0 1</fdir>
