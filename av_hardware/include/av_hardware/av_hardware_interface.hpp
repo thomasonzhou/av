@@ -45,6 +45,7 @@ private:
     const std::vector<std::string> joint_names_;
     const std::array<std::string, NUM_JOINTS> node_names_;
     
+    static const std::vector<double> multiplier_{-1.0, 1.0};
     std::vector<double> position_{0.0, 0.0};
     std::vector<double> velocity_{0.0, 0.0};
     std::vector<double> command_position_{0.0, 0.0};

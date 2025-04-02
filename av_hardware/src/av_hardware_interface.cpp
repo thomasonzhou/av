@@ -19,8 +19,8 @@ AvHardwareInterface::AvHardwareInterface():
     left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
         "/"+ node_names_.at(0)+"/joint_state", 10,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
-            position_[0] = msg->position[0];
-            velocity_[0] = msg->velocity[0];
+            position_[0] = multiplier_[0] * msg->position[0];
+            velocity_[0] = multiplier_[0] * msg->velocity[0];
         });
     right_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
         "/"+ node_names_.at(1)+"/joint_state", 10,
@@ -187,8 +187,8 @@ hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & 
         trajectory_msgs::msg::JointTrajectory msg;
         msg.joint_names = {joint_names_.at(i)};
         msg.points.resize(1);
-        msg.points[0].positions[0] = position_.at(i);
-        msg.points[0].velocities[0] = velocity_.at(i);
+        msg.points[0].positions[0] = multiplier_.at(i) * position_.at(i);
+        msg.points[0].velocities[0] = multiplier_.at(i) * velocity_.at(i);
         msg.header.stamp = node_->now();
         joint_trajectory_pub_->publish(msg);
     };
