@@ -17,6 +17,8 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     use_sim_time_launch_arg = DeclareLaunchArgument(name="use_sim_time", default_value="true")
+    use_ros2_control = LaunchConfiguration("use_ros2_control")
+    use_ros2_control_launch_arg = DeclareLaunchArgument(name="use_ros2_control", default_value="true")
 
     robot_state_publisher_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -30,7 +32,7 @@ def generate_launch_description():
                 ),
             ]
         ),
-        launch_arguments=dict(use_sim_time=use_sim_time).items(),
+        launch_arguments=dict(use_sim_time=use_sim_time, use_ros2_control=use_ros2_control).items(),
     )
 
 
@@ -69,6 +71,7 @@ def generate_launch_description():
                 description="Absolute path to the robot URDF or xacro file"
             ),
             use_sim_time_launch_arg,
+            use_ros2_control_launch_arg,
             robot_state_publisher_node,
             gazebo,
             spawn_entity,

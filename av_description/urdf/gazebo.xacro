@@ -4,10 +4,6 @@
     <xacro:macro name="wheel" params="prefix:='' caster:='false'">
         <gazebo reference="${prefix}wheel_link">
             <material>Gazebo/Grey</material>
-            <!-- <surface>
-                <friction>
-                    <ode> -->
-                        <!-- <fdir>0 0 1</fdir> -->
         <xacro:if value="${caster}">
             <mu1 value="0.000001"/>
             <mu2 value="0.000000001"/>
