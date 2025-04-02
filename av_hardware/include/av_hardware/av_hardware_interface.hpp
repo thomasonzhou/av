@@ -14,17 +14,20 @@
 #include <hardware_interface/types/hardware_interface_type_values.hpp>
 #include <rclcpp/macros.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp/executors.hpp>
 #include "std_srvs/srv/set_bool.hpp"
 #include "std_srvs/srv/trigger.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
 #include <chrono>
+#include <thread>
 
 namespace av_hardware
 {
 class AvHardwareInterface : public hardware_interface::ActuatorInterface{
 public:
     AvHardwareInterface();
+    ~AvHardwareInterface();
 
     hardware_interface::CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;
     hardware_interface::CallbackReturn on_configure(const rclcpp_lifecycle::State & previous_state) override;
@@ -45,7 +48,7 @@ private:
     const std::vector<std::string> joint_names_;
     const std::array<std::string, NUM_JOINTS> node_names_;
     
-    static const std::vector<double> multiplier_{-1.0, 1.0};
+    static const inline std::vector<double> multiplier_{-1.0, 1.0};
     std::vector<double> position_{0.0, 0.0};
     std::vector<double> velocity_{0.0, 0.0};
     std::vector<double> command_position_{0.0, 0.0};
@@ -60,6 +63,9 @@ private:
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr right_joint_sub_;
 
     rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>::SharedPtr joint_trajectory_pub_;
+
+    rclcpp::Executor::SharedPtr executor_;
+    std::thread executor_thread_;
 };
 
 };

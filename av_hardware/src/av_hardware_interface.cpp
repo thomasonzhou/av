@@ -30,7 +30,18 @@ AvHardwareInterface::AvHardwareInterface():
         });
     joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
         "/joint_trajectory", 10);
+
+    executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
+    executor_->add_node(node_);
+    executor_thread_ = std::thread([this]() { executor_->spin(); });
     RCLCPP_INFO(get_logger(), "Initialized motors with IDs: %d, %d", motor_ids_.at(0), motor_ids_.at(1));
+}
+
+AvHardwareInterface::~AvHardwareInterface()
+{
+    executor_->cancel();
+    executor_thread_.join();
+    RCLCPP_INFO(get_logger(), "Shutting down motors with IDs: %d, %d", motor_ids_.at(0), motor_ids_.at(1));
 }
 
 rclcpp::Logger AvHardwareInterface::get_logger() const {
@@ -67,20 +78,22 @@ hardware_interface::CallbackReturn AvHardwareInterface::on_configure(const rclcp
     }
     auto left_zero_future = left_zero_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
     auto right_zero_future = right_zero_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
-    if (rclcpp::spin_until_future_complete(node_, left_zero_future) != rclcpp::FutureReturnCode::SUCCESS)
+
+    if (left_zero_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service zero_position for left motor");
         return hardware_interface::CallbackReturn::ERROR;
     }
-    else{
+    else {
         RCLCPP_INFO(get_logger(), "Successfully called service zero_position for left motor");
     }
-    if (rclcpp::spin_until_future_complete(node_, right_zero_future) != rclcpp::FutureReturnCode::SUCCESS)
+    
+    if (right_zero_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service zero_position for right motor");
         return hardware_interface::CallbackReturn::ERROR;
     }
-    else{
+    else {
         RCLCPP_INFO(get_logger(), "Successfully called service zero_position for right motor");
     }
     return hardware_interface::CallbackReturn::SUCCESS;
@@ -103,7 +116,7 @@ hardware_interface::CallbackReturn AvHardwareInterface::on_activate(const rclcpp
     auto left_future = left_torque_client_->async_send_request(request);
     auto right_future = right_torque_client_->async_send_request(request);
 
-    if (rclcpp::spin_until_future_complete(node_, left_future) != rclcpp::FutureReturnCode::SUCCESS)
+    if (left_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service enable_torque for left motor");
         return hardware_interface::CallbackReturn::ERROR;
@@ -111,7 +124,7 @@ hardware_interface::CallbackReturn AvHardwareInterface::on_activate(const rclcpp
     else{
         RCLCPP_INFO(get_logger(), "Successfully called service enable_torque for left motor");
     }
-    if (rclcpp::spin_until_future_complete(node_, right_future) != rclcpp::FutureReturnCode::SUCCESS)
+    if (right_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service enable_torque for right motor");
         return hardware_interface::CallbackReturn::ERROR;
@@ -130,7 +143,8 @@ hardware_interface::CallbackReturn AvHardwareInterface::on_deactivate(const rclc
     request->data = false;
     auto left_future = left_torque_client_->async_send_request(request);
     auto right_future = right_torque_client_->async_send_request(request);
-    if (rclcpp::spin_until_future_complete(node_, left_future) != rclcpp::FutureReturnCode::SUCCESS)
+
+    if (left_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service disable_torque for left motor");
         return hardware_interface::CallbackReturn::ERROR;
@@ -138,7 +152,7 @@ hardware_interface::CallbackReturn AvHardwareInterface::on_deactivate(const rclc
     else{
         RCLCPP_INFO(get_logger(), "Successfully called service disable_torque for left motor");
     }
-    if (rclcpp::spin_until_future_complete(node_, right_future) != rclcpp::FutureReturnCode::SUCCESS)
+    if (right_future.wait_for(std::chrono::seconds(2)) != std::future_status::ready)
     {
         RCLCPP_ERROR(get_logger(), "Failed to call service disable_torque for right motor");
         return hardware_interface::CallbackReturn::ERROR;
@@ -175,20 +189,20 @@ std::vector<hardware_interface::CommandInterface> AvHardwareInterface::export_co
 hardware_interface::return_type AvHardwareInterface::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
 
-    rclcpp::spin_some(node_);
     return hardware_interface::return_type::OK;
 }
 hardware_interface::return_type AvHardwareInterface::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-
-    trajectory_msgs::msg::JointTrajectory msg;
-
     auto send_message = [this](const int i) {
         trajectory_msgs::msg::JointTrajectory msg;
         msg.joint_names = {joint_names_.at(i)};
         msg.points.resize(1);
-        msg.points[0].positions[0] = multiplier_.at(i) * position_.at(i);
-        msg.points[0].velocities[0] = multiplier_.at(i) * velocity_.at(i);
+        msg.points[0].positions.resize(1);
+        msg.points[0].velocities.resize(1);
+        msg.points[0].accelerations.resize(1);
+        msg.points[0].positions[0] = multiplier_.at(i) * command_position_.at(i);
+        msg.points[0].velocities[0] = multiplier_.at(i) * command_velocity_.at(i);
+        msg.points[0].accelerations[0] = 0.0;
         msg.header.stamp = node_->now();
         joint_trajectory_pub_->publish(msg);
     };
