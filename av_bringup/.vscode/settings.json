@@ -1,0 +1,22 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/thomason/ros2_ws/build/generate_parameter_module_example",
+        "/home/thomason/ros2_ws/build/joy_tester",
+        "/home/thomason/ros2_ws/build/generate_parameter_library_py",
+        "/home/thomason/ros2_ws/install/local/lib/python3.10/dist-packages",
+        "/home/thomason/ros2_ws/install/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
+        "/home/thomason/.local/lib/python3.10/site-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/thomason/ros2_ws/build/generate_parameter_module_example",
+        "/home/thomason/ros2_ws/build/joy_tester",
+        "/home/thomason/ros2_ws/build/generate_parameter_library_py",
+        "/home/thomason/ros2_ws/install/local/lib/python3.10/dist-packages",
+        "/home/thomason/ros2_ws/install/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
+        "/home/thomason/.local/lib/python3.10/site-packages"
+    ]
+}

@@ -1,8 +1,10 @@
 # Modified from https://github.com/Slamtec/sllidar_ros2/blob/main/launch/sllidar_a1_launch.py
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
+import pathlib
 
 
 def generate_launch_description():
@@ -13,6 +15,32 @@ def generate_launch_description():
     inverted = LaunchConfiguration('inverted', default='false')
     angle_compensate = LaunchConfiguration('angle_compensate', default='true')
     scan_mode = LaunchConfiguration('scan_mode', default='Standard')
+
+    lidar_node = Node(
+            package='sllidar_ros2',
+            executable='sllidar_node',
+            name='sllidar_node',
+            parameters=[{'channel_type':channel_type,
+                            'serial_port': serial_port, 
+                            'serial_baudrate': serial_baudrate, 
+                            'frame_id': frame_id,
+                            'inverted': inverted, 
+                            'angle_compensate': angle_compensate}],
+            output='screen'),
+
+    laser_filter_node = Node(
+            package="laser_filters",
+            executable="scan_to_scan_filter_chain",
+            parameters=[
+                PathJoinSubstitution([
+                    pathlib.Path(FindPackageShare(package="av_bringup").find(
+                        "av_bringup"
+                    )),
+                    "config", "lidar.yaml",
+                ])
+            ],
+            output='screen'
+        )
     
     return LaunchDescription([
 
@@ -49,17 +77,6 @@ def generate_launch_description():
             'scan_mode',
             default_value=scan_mode,
             description='Specifying scan mode of lidar'),
-
-
-        Node(
-            package='sllidar_ros2',
-            executable='sllidar_node',
-            name='sllidar_node',
-            parameters=[{'channel_type':channel_type,
-                         'serial_port': serial_port, 
-                         'serial_baudrate': serial_baudrate, 
-                         'frame_id': frame_id,
-                         'inverted': inverted, 
-                         'angle_compensate': angle_compensate}],
-            output='screen'),
+        lidar_node,
+        laser_filter_node
     ])
