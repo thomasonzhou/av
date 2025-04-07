@@ -27,16 +27,16 @@ def generate_launch_description():
                             'inverted': inverted, 
                             'angle_compensate': angle_compensate}],
             remappings=[('scan', 'scan_unfiltered')],
-            output='screen'),
+            output='screen')
 
     laser_filter_node = Node(
             package="laser_filters",
             executable="scan_to_scan_filter_chain",
             parameters=[
                 PathJoinSubstitution([
-                    pathlib.Path(FindPackageShare(package="av_bringup").find(
+                    str(pathlib.Path(FindPackageShare(package="av_bringup").find(
                         "av_bringup"
-                    )),
+                    ))),
                     "config", "lidar.yaml",
                 ])
             ],
