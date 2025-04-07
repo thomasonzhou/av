@@ -30,7 +30,7 @@ def generate_launch_description():
         XMLLaunchDescriptionSource(
             os.path.join(get_package_share_directory('ros2_socketcan'), 'launch/socket_can_bridge.launch.xml')
         ),
-        launch_arguments={'interface': 'can3'}.items()
+        launch_arguments={'interface': 'can0'}.items()
     )
 
     return LaunchDescription([
