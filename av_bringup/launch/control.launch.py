@@ -96,6 +96,6 @@ def generate_launch_description():
             robot_state_publisher_node,
             delayed_controller_manager,
             delayed_diff_drive_spawner,
-            # delayed_joint_broadcaster_spawner
+            delayed_joint_broadcaster_spawner
         ]
     )
