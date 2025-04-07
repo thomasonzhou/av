@@ -26,6 +26,7 @@ def generate_launch_description():
                             'frame_id': frame_id,
                             'inverted': inverted, 
                             'angle_compensate': angle_compensate}],
+            remappings=[('scan', 'scan_unfiltered')],
             output='screen'),
 
     laser_filter_node = Node(
@@ -38,6 +39,10 @@ def generate_launch_description():
                     )),
                     "config", "lidar.yaml",
                 ])
+            ],
+            remappings=[
+                ("scan", "scan_unfiltered"),
+                ("scan_filtered", "scan")
             ],
             output='screen'
         )
