@@ -25,8 +25,8 @@ AvHardwareInterface::AvHardwareInterface():
         "/"+ node_names_.at(0)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             rclcpp::Time now = node_->now();
-            rclcpp::Duration dt = (now - last_left_time_).seconds();
-            position_[0] = multiplier_[0] * msg->velocity[0] * dt;
+            const double dt = (now - last_left_time_).seconds();
+            position_[0] += multiplier_[0] * msg->velocity[0] * dt;
             velocity_[0] = multiplier_[0] * msg->velocity[0];
             last_left_time_ = now;
         });
@@ -34,8 +34,8 @@ AvHardwareInterface::AvHardwareInterface():
         "/"+ node_names_.at(1)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             rclcpp::Time now = node_->now();
-            rclcpp::Duration dt = (now - last_right_time_).seconds();
-            position_[1] = multiplier_[1] * msg->velocity[0] * dt;
+            const double dt = (now - last_right_time_).seconds();
+            position_[1] += multiplier_[1] * msg->velocity[0] * dt;
             velocity_[1] = multiplier_[1] * msg->velocity[0];
             last_right_time_ = now;
         });
