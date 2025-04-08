@@ -1,8 +1,8 @@
 scan_to_scan_filter_chain:
   ros__parameters:
     filter1:
-      name: angle
-      type: laser_filters/LaserScanAngularBoundsFilter
+      name: footprint_filter
+      type: laser_filters/LaserScanFootprintFilter
       params:
-        lower_angle: 1.0      # Lower angular bound (in radians)
-        upper_angle: -1.0       # Upper angular bound (in radians)
+        inscribed_radius: 0.4    # Upper angular bound (in radians)
+
