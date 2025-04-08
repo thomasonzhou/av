@@ -19,3 +19,7 @@ diff_cont:
     wheel_radius: 0.055
 
     use_stamped_vel: false
+
+joint_broad:
+  ros__parameters:
+    publish_rate: 50.0
