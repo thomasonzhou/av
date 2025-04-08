@@ -12,21 +12,18 @@ RIGHT_MOTOR_ID  = 0x7F
 def generate_launch_description():
     nodes = []
 
-    # our odometry uses the position encoder for state updates
-    override_joint_limits = [{'anguler_position.max': 10e100}, {'anguler_position.min': -10e100}]
-
     nodes.append(Node(
         package='cybergear_socketcan_driver',
         executable='cybergear_velocity_driver_node',
         name='cybergear_right',
-        parameters=[{'device_id': RIGHT_MOTOR_ID}, {'joint_name': 'right_wheel_joint'}, *override_joint_limits]
+        parameters=[{'device_id': RIGHT_MOTOR_ID}, {'joint_name': 'right_wheel_joint'}]
     ))
 
     nodes.append(Node(
         package='cybergear_socketcan_driver',
         executable='cybergear_velocity_driver_node',
         name='cybergear_left',  
-        parameters=[{'device_id': LEFT_MOTOR_ID}, {'joint_name': 'left_wheel_joint'}, *override_joint_limits]
+        parameters=[{'device_id': LEFT_MOTOR_ID}, {'joint_name': 'left_wheel_joint'}]
     ))
 
     socketcan_bridge_launch = IncludeLaunchDescription(

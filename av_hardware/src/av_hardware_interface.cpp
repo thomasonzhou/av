@@ -17,17 +17,27 @@ AvHardwareInterface::AvHardwareInterface():
     right_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(1)+"/zero_position");
 
     auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).reliable();
+
+    last_left_time_ = node_->now();
+    last_right_time_ = node_->now();
+
     left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
         "/"+ node_names_.at(0)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
-            position_[0] = multiplier_[0] * msg->position[0];
+            rclcpp::Time now = node_->now();
+            rclcpp::Duration dt = (now - last_left_time_).seconds();
+            position_[0] = multiplier_[0] * msg->velocity[0] * dt;
             velocity_[0] = multiplier_[0] * msg->velocity[0];
+            last_left_time_ = now;
         });
     right_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
         "/"+ node_names_.at(1)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
-            position_[1] = msg->position[0];
-            velocity_[1] = msg->velocity[0];
+            rclcpp::Time now = node_->now();
+            rclcpp::Duration dt = (now - last_right_time_).seconds();
+            position_[1] = multiplier_[1] * msg->velocity[0] * dt;
+            velocity_[1] = multiplier_[1] * msg->velocity[0];
+            last_right_time_ = now;
         });
     joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
         "/joint_trajectory", 10);
