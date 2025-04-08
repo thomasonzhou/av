@@ -30,7 +30,7 @@ AvHardwareInterface::AvHardwareInterface():
             velocity_[1] = msg->velocity[0];
         });
     joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
-        "/joint_trajectory", qos);
+        "/joint_trajectory", 10);
 
     executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
     executor_->add_node(node_);
