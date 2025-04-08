@@ -85,6 +85,14 @@ def generate_launch_description():
         )
     )
 
+    twist_mux_params = os.path.join(FindPackageShare("av_bringup").find("av_bringup"), 'config', 'twist_mux.yaml')
+    twist_mux_node = Node(
+        package="twist_mux",
+        executable="twist_mux",
+        parameters=[twist_mux_params, {"use_sim_time": False}],
+        remappings=[{"/cmd_vel_out", "/diff_cont/cmd_vel_unstamped"}]
+    )
+
     return launch.LaunchDescription(
         [
             DeclareLaunchArgument(
@@ -96,6 +104,7 @@ def generate_launch_description():
             robot_state_publisher_node,
             delayed_controller_manager,
             delayed_diff_drive_spawner,
-            delayed_joint_broadcaster_spawner
+            delayed_joint_broadcaster_spawner,
+            twist_mux_node
         ]
     )
