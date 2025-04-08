@@ -16,7 +16,7 @@ AvHardwareInterface::AvHardwareInterface():
     left_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(0)+"/zero_position");
     right_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(1)+"/zero_position");
 
-    auto qos = rclcpp::QoS(rclcpp::KeepLast(1));
+    auto qos = rclcpp::QoS(rclcpp::KeepLast(5)).best_effort();
     left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
         "/"+ node_names_.at(0)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
