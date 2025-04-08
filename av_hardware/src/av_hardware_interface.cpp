@@ -16,20 +16,21 @@ AvHardwareInterface::AvHardwareInterface():
     left_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(0)+"/zero_position");
     right_zero_client_ = node_->create_client<std_srvs::srv::Trigger>("/"+ node_names_.at(1)+"/zero_position");
 
+    auto qos = rclcpp::QoS(rclcpp::KeepLast(1));
     left_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-        "/"+ node_names_.at(0)+"/joint_state", 10,
+        "/"+ node_names_.at(0)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             position_[0] = multiplier_[0] * msg->position[0];
             velocity_[0] = multiplier_[0] * msg->velocity[0];
         });
     right_joint_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(
-        "/"+ node_names_.at(1)+"/joint_state", 10,
+        "/"+ node_names_.at(1)+"/joint_state", qos,
         [this](const sensor_msgs::msg::JointState::SharedPtr msg) {
             position_[1] = msg->position[0];
             velocity_[1] = msg->velocity[0];
         });
     joint_trajectory_pub_ = node_->create_publisher<trajectory_msgs::msg::JointTrajectory>(
-        "/joint_trajectory", 10);
+        "/joint_trajectory", qos);
 
     executor_ = std::make_shared<rclcpp::executors::MultiThreadedExecutor>();
     executor_->add_node(node_);
