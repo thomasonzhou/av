@@ -66,6 +66,9 @@ private:
 
     rclcpp::Executor::SharedPtr executor_;
     std::thread executor_thread_;
+
+    rclcpp::Time last_left_time_;
+    rclcpp::Time last_right_time_;
 };
 
 };
